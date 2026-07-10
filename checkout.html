@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout | दूध बाजार</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-badge">🥛</span>
+      <span>दूध बाजार</span>
+    </a>
+    <a href="index.html" class="btn btn-outline btn-sm">← Previous</a>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <h2>Checkout</h2>
+
+    <div id="checkoutView" class="checkout-grid">
+      <!-- LEFT: Order form -->
+      <div class="card">
+        <h3 style="margin-top:0;">Delivery Details</h3>
+        <form id="orderForm">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="customerName" required placeholder="Your Name">
+          </div>
+          <div class="form-group">
+            <label>Mobile Number *</label>
+            <input type="tel" id="phone" required maxlength="10" placeholder="10 digit mobile number">
+            <div class="error-text" id="phoneError"></div>
+          </div>
+          <div class="form-group">
+            <label>Delivery Address *</label>
+            <textarea id="address" rows="3" required placeholder="House No., Street, City, Pincode"></textarea>
+          </div>
+
+          <h3>Order Summary</h3>
+          <div id="summaryItems"></div>
+          <div class="order-summary-total">
+            <span>Total Payment Amount</span>
+            <span id="summaryTotal">₹0</span>
+          </div>
+
+          <h3>Payment</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Scan the QR code above, make the payment, then enter your UPI transaction/reference ID below.</p>
+          <div class="form-group">
+            <label>UPI Transaction / Reference ID *</label>
+            <input type="text" id="transactionId" required placeholder="Example: 123456789012">
+            <div class="error-text" id="txnError"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="placeOrderBtn">Place order</button>
+        </form>
+      </div>
+
+      <!-- RIGHT: QR Code -->
+      <div class="card qr-box">
+        <h3 style="margin-top:0;">Pay with UPI</h3>
+        <img id="qrImage" width="240" height="240" alt="UPI QR Code">
+        <p class="upi-id" id="upiIdDisplay">Loading...</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin-top:14px;">
+          Scan this QR code with Google Pay, PhonePe, Paytm or any other UPI app, or pay directly to the UPI ID above.
+        </p>
+        <p style="font-size:12px;color:var(--ink-soft);margin-top:10px;">
+          Please ensure you enter the correct UPI transaction ID in the form above after making the payment.
+        </p>
+      </div>
+    </div>
+
+    <!-- Order confirmation view (shown after successful submit) -->
+    <div id="confirmationView" class="card" style="display:none; text-align:center; max-width:480px; margin:0 auto;">
+      <div style="font-size:48px;"></div>
+      <h2>Order placed successfully!</h2>
+      <p>Your order number is:</p>
+      <p style="font-size:20px;font-weight:800;color:var(--green-dark);" id="confirmOrderNumber"></p>
+      <p style="color:var(--ink-soft);font-size:14px;">We will confirm your order shortly after verifying the payment. Please save your order number for tracking purposes.</p>
+      <a href="track-order.html" class="btn btn-outline" style="margin-top:12px;">Track My Order</a>
+      <a href="index.html" class="btn btn-primary" style="margin-top:12px;">Continue Shopping</a>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/config.js"></script>
+<script src="js/toast.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>

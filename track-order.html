@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ऑर्डर ट्रैक करें | दूध बाजार</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-badge">🥛</span>
+      <span>दूध बाजार</span>
+    </a>
+    <a href="index.html" class="btn btn-outline btn-sm">← previous</a>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container" style="max-width:520px;">
+    <h2>Check your order</h2>
+    <div class="card">
+      <div class="form-group">
+        <label>order number</label>
+        <input type="text" id="orderNumberInput" placeholder="Example: DB-20260709-4821">
+      </div>
+      <button class="btn btn-primary btn-block" id="trackBtn">Track your Order</button>
+    </div>
+
+    <div id="orderResult" style="margin-top:20px;"></div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/config.js"></script>
+<script src="js/toast.js"></script>
+<script>
+  const trackBtn = document.getElementById('trackBtn');
+  const resultEl = document.getElementById('orderResult');
+
+  const statusLabels = {
+    pending: 'order pending',
+    confirmed: 'Order confirmed',
+    delivered: 'order deliverd',
+    cancelled: 'order rejected',
+  };
+  const paymentLabels = {
+    pending_verification: 'verification pending',
+    verified: 'verified',
+    rejected: 'rejected- please contect us:',
+  };
+
+  trackBtn.addEventListener('click', async () => {
+    const orderNumber = document.getElementById('orderNumberInput').value.trim();
+    if (!orderNumber) {
+      showToast('please enter your mobile number');
+      return;
+    }
+    resultEl.innerHTML = '<p>Searching...</p>';
+    try {
+      const res = await fetch(`${API_BASE_URL}/orders/${encodeURIComponent(orderNumber)}`);
+      const json = await res.json();
+      if (!json.success) {
+        resultEl.innerHTML = `<div class="card">${json.message}</div>`;
+        return;
+      }
+      const o = json.data;
+      const items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
+      resultEl.innerHTML = `
+        <div class="card">
+          <h3 style="margin-top:0;">${o.order_number}</h3>
+          <p><span class="badge ${o.order_status}">${statusLabels[o.order_status] || o.order_status}</span>
+             &nbsp; <span class="badge ${o.payment_status === 'verified' ? 'verified' : o.payment_status === 'rejected' ? 'rejected' : 'pending'}">
+             ${paymentLabels[o.payment_status] || o.payment_status}</span></p>
+          <p style="font-size:13px;color:var(--ink-soft);">order Date: ${new Date(o.created_at).toLocaleString()}</p>
+          <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
+          ${items.map((i) => `<div class="order-summary-row"><span>${i.name} × ${i.quantity}</span><span>₹${(i.price * i.quantity).toFixed(0)}</span></div>`).join('')}
+          <div class="order-summary-total"><span>Total Amount</span><span>₹${Number(o.total_amount).toFixed(0)}</span></div>
+        </div>`;
+    } catch (err) {
+      resultEl.innerHTML = `<div class="card">order is not found please recheck order id or try Again later।</div>`;
+    }
+  });
+</script>
+</body>
+</html>
